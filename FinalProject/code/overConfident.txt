@@ -1,0 +1,8 @@
+NEGATIVE POSITIVE 0.9381561918802216 Cons: Not-so-friendly service and cash only. You don't spend much time with them anyways so it's not a big deal. Slightly expensive. The portion sizes are medium sized, so not
+NEGATIVE POSITIVE 0.9655341332678122 My Husband, Daughter, and I went to this place to eat a couple nights ago. You could tell the people who work there are nice, but the service was just
+POSITIVE NEGATIVE 0.91545637959761 Wow, this is a hard one. I have been here several times for work functions and this last time for a nice Date Night with my husband. Hands down one
+NEGATIVE POSITIVE 0.9072701470279371 I came here last Saturday night with my family and I'm not sure what we were thinking but we didn't try to make a reservation until 2:00pm. That left us
+POSITIVE NEGATIVE 0.9291033537656921 Summary:  Beautiful hotel, highly error-prone staff. It is rare to find a hotel as beautiful as this. The look is very modern which I happen to love. It has
+NEGATIVE POSITIVE 0.9065026306895694 Ok so this is not fast pizza so if you need it in ten minutes and don't really care what it tastes like then this may not be your place.
+NEGATIVE POSITIVE 0.918368360420252 What's there to not like about this place. I was looking for a Yogurtland and instead went in here. The name doesn't fit the interior at all. I, for some
+POSITIVE NEGATIVE 0.9475594858458641 Having trouble on what to have for dinner and have a big appetite, Check out this place The desserts are great and so is the fresh food. I love coming

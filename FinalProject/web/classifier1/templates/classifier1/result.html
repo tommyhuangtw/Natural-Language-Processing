@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    
+    <script type="text/javascript">
+      var topWords = []
+      {% for key, value in topWords.items %}
+        topWords.push(['{{ key }}', {{ value }} ])
+      {% endfor %}
+      var bottomWords = []
+      {% for key, value in bottomWords.items %}
+        bottomWords.push(['{{ key }}', {{ value }} ])
+      {% endfor %}
+
+      var positiveCorpusVectors = []
+      var negativeCorpusVectors = []
+      let n
+      {% for node in positiveCorpusVectors %}
+        n = [{{ node|join:", " }}]
+        positiveCorpusVectors.push({
+          x: n[0],
+          y: n[1],
+        })
+      {% endfor %}
+      {% for node in negativeCorpusVectors %}
+        n = [{{ node|join:", " }}]
+        negativeCorpusVectors.push({
+          x: n[0],
+          y: n[1],
+        })
+      {% endfor %}
+      n = [{{ sentenceVector|join:", " }}]
+      var sentenceVector = {
+        x: n[0],
+        y: n[1],
+      }
+      var result = '{{ result }}'
+      console.log(positiveCorpusVectors)
+      console.log(negativeCorpusVectors)
+    </script>
+
+    {% load staticfiles %}
+    <script src="{% static '/script/classifier1/result.js' %}"></script>
+    <script src="{% static '/script/wordcloud.js' %}"></script>
+    <link href="{% static '/css/index.css' %}" rel="stylesheet" type="text/css"/>
+
+    <title>Comment Classification</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-8">
+          <h1 class="mt-2">Comment Classification</h1>
+          <hr class="mt-0 mb-4">
+
+          <div id="wordCloudSection">
+            <div class="wordCloudGroup">
+              <div>Significant Positive Words</div>
+              <canvas class="wordCloud" id="positiveWordCloud"></canvas>
+            </div>
+            <div class="wordCloudGroup">
+              <div>Significant Negative Words</div>
+              <canvas class="wordCloud" id="negativeWordCloud"></canvas>
+            </div>
+          </div>
+          
+          <label for="inputSentence">
+            Input Sentence
+            <span class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Example
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" id="positiveExample">Positive</a>
+                <a class="dropdown-item" id="negativeExample">Negative</a>
+                <a class="dropdown-item" id="neutralExample">Neutral</a>
+                <a class="dropdown-item" id="positiveOODExample">Positive Out-of-domain</a>
+                <a class="dropdown-item" id="negativeOODExample">Negative Out-of-domain</a>
+                <a class="dropdown-item" id="overConfidenceInPositiveExample">Over-confidence</a>
+                <a class="dropdown-item" id="overConfidenceInNegativeExample1">Over-confidence</a>
+                <a class="dropdown-item" id="overConfidenceInNegativeExample2">Over-confidence</a>
+              </div>
+            </span>
+          </label>
+          <div class="input-group mb-3">
+            <textarea type="text" class="form-control" placeholder="..." id="inputSentence" name="inputSentence">{{ sentence }}</textarea>
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button" id="classifyButton">Classify</button>
+            </div>
+          </div>
+
+          <div class="row" id="descriptionSection">
+            <div class="col-4">
+              <nav id="navbar" class="navbar navbar-light bg-light flex-column descriptionScroll">
+                <nav class="nav nav-pills flex-column">
+                  <a class="nav-link" href="#item-1">Result</a>
+                  <a class="nav-link" href="#item-2">Analysis</a>
+                  <nav class="nav nav-pills flex-column">
+                    <a class="nav-link ml-3 my-1" href="#item-2-1">Significant Words</a>
+                    <a class="nav-link ml-3 my-1" href="#item-2-2">Sentence Similarity</a>
+                    <a class="nav-link ml-3 my-1" href="#item-2-3">Sentence Vector</a>
+                  </nav>
+                </nav>
+              </nav>
+            </div>
+            
+            <div class="col-8">
+              <div data-spy="scroll" data-target="#navbar" data-offset="0" class="descriptionScroll">
+                <h4 id="item-1">Result</h4>
+                <p id="result">{{ result }} with {{ confidence }}% confidence</p>
+
+                <hr>
+
+                <h4 id="item-2">Analysis</h4>
+                <h5 id="item-2-1">Significant Words</h4>
+                <p>
+                  Significant <b>positive</b> word occurrences in this sentence:
+                  <span><b id="positiveOccurrences">{{ positiveOccurrences }}</b></span>
+                </p>
+                <p>
+                  Significant <b>negative</b> word occurrences in this sentence:
+                  <span><b id="negativeOccurrences">{{ negativeOccurrences }}</b></span>
+                </p>
+
+                <h5 id="item-2-2" class="subitem">Sentence Similarity</h4>
+                <p>With <b>positive</b> corpus vector: <b id="positiveCosineSimilarity">{{ positiveCosineSimilarity }}</b></p>
+                <p>With <b>negative</b> corpus vector: <b id="negativeCosineSimilarity">{{ negativeCosineSimilarity }}</b></p>
+                
+                <h5 id="item-2-3" class="subitem">Sentence Vector</h4>
+                <div id="chartContainer">
+                  <canvas id="scatteredChart" width='400' height='400'></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
